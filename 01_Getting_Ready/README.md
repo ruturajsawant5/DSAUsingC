@@ -6,6 +6,9 @@
 | hexadecimal        | `%hhx`| `%hx` | `%x` | `%lx`| `%llx`    |
 
 %zu -> for variadic stuff like sizeof() 
+
 %p  -> printing address in hex 
+
 %s  -> for string 
+
 %c  -> for char 
