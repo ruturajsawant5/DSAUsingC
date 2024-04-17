@@ -13,7 +13,7 @@ int main()
     }
 
     *ptr = 100;
-    printf("*ptr = %d", *ptr);
+    printf("*ptr = %d\n", *ptr);
 
     free(ptr);
     ptr = NULL;

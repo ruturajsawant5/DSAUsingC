@@ -4,7 +4,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#ifdef _WIN32
 typedef long long ssize_t; 
+#endif
 
 void fill_array(int* arr, int N);
 void insertion_sort(int* arr, int N);
@@ -50,6 +52,7 @@ int main(int argc, char* argv[])
 
     validate_sort(arr, N);
 
+    free(arr);
 }
 
 void fill_array(int* arr, int N)

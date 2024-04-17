@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <limits.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -45,7 +46,9 @@ int main(int argc, char* argv[])
     end = clock();
 
     time_taken = ((double)(end - start)) * 1000 / CLOCKS_PER_SEC;
-    printf("Result = %d Time taken = %.2f", res, time_taken);
+    printf("Result = %d Time taken = %.2f\n", res, time_taken);
+
+    free(arr);
 }
 
 int binary_search(int* arr, int start, int end, int search_term)
