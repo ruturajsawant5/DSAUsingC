@@ -82,14 +82,7 @@ status_t reverse_list(
 status_t reverse_list_swp(
         dcll_t* p_list
     ); 
-
-static void generic_insert(
-                node_t* p_beg, 
-                node_t* p_mid, 
-                node_t* p_end 
-            ); 
-
-static void generic_delete(node_t* p_delete_node); 
+ 
 static node_t* search_node(dcll_t* p_list, data_t s_data); 
 
 static node_t* get_node(data_t new_data); 

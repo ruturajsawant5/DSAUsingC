@@ -16,65 +16,107 @@ dcll_t* create_list(void)
 
 status_t insert_start(dcll_t* p_list, data_t new_data)
 {
-    generic_insert(p_list, get_node(new_data), p_list->next); 
+    node_t* new_node = get_node(new_data);
+    
+    new_node->prev = p_list;
+    new_node->next = p_list->next;
+    p_list->next->prev = new_node;
+    p_list->next = new_node;
+
     return (SUCCESS); 
 } 
 
 status_t insert_end(dcll_t* p_list, data_t new_data)
 {
-    generic_insert(p_list->prev, get_node(new_data), p_list); 
+    node_t* new_node = get_node(new_data);
+
+    new_node->prev = p_list->prev;
+    new_node->next = p_list;
+    p_list->prev->next = new_node;
+    p_list->prev = new_node;
+
     return (SUCCESS); 
 }
 
 status_t insert_after(dcll_t* p_list, data_t e_data, data_t new_data)
 {
-    node_t* e_node = NULL; 
+    node_t* e_node = NULL;
+    node_t* new_node = NULL;
 
     e_node = search_node(p_list, e_data); 
     if(e_node == NULL)
         return (LIST_DATA_NOT_FOUND); 
 
-    generic_insert(e_node, get_node(new_data), e_node->next); 
+    new_node = get_node(new_data);
+
+    new_node->prev = e_node;
+    new_node->next = e_node->next;
+    e_node->next->prev = new_node;
+    e_node->next = new_node;
+
     return (SUCCESS); 
 }
 
 status_t insert_before(dcll_t* p_list, data_t e_data, data_t new_data)
 {
-    node_t* e_node = NULL; 
+    node_t* e_node = NULL;
+    node_t* new_node = NULL;
 
     e_node = search_node(p_list, e_data); 
     if(e_node == NULL)
         return (LIST_DATA_NOT_FOUND); 
 
-    generic_insert(e_node->prev, get_node(new_data), e_node); 
+    new_node = get_node(new_data);
+
+    new_node->prev = e_node->prev;
+    new_node->next = e_node;
+    e_node->prev->next = new_node;
+    e_node->prev = new_node;
+
     return (SUCCESS); 
 }
 
 status_t remove_start(dcll_t* p_list)
 {
+    node_t* p_del = NULL;
+
     if(is_list_empty(p_list))
         return (LIST_EMPTY); 
-    generic_delete(p_list->next); 
+
+    p_del = p_list->next;
+
+    p_del->next->prev = p_del->prev;
+    p_del->prev->next = p_del->next;
+    
     return (SUCCESS); 
 }
 
 status_t remove_end(dcll_t* p_list)
 {
+    node_t* p_del = NULL;
+
     if(is_list_empty(p_list))
-        return (LIST_EMPTY); 
-    generic_delete(p_list->prev); 
+        return (LIST_EMPTY);
+
+    p_del = p_list->prev;
+    
+    p_del->next->prev = p_del->prev;
+    p_del->prev->next = p_del->next;
+
     return (SUCCESS); 
 }
 
 status_t remove_data(dcll_t* p_list, data_t r_data)
 {
-    node_t* p_delete_node = NULL; 
+    node_t* p_del = NULL; 
 
-    p_delete_node = search_node(p_list, r_data); 
-    if(p_delete_node == NULL)
+    p_del = search_node(p_list, r_data); 
+    if(p_del == NULL)
         return (LIST_DATA_NOT_FOUND); 
     
-    generic_delete(p_delete_node); 
+    p_del->next->prev = p_del->prev;
+    p_del->prev->next = p_del->next;
+    
     return (SUCCESS); 
 }
 
@@ -96,19 +138,33 @@ status_t get_end(dcll_t* p_list, data_t* p_end_data)
 
 status_t pop_start(dcll_t* p_list, data_t* p_start_data)
 {
+    node_t* p_del;
+
     if(is_list_empty(p_list))
         return (LIST_EMPTY); 
     *p_start_data = p_list->next->data;
-    generic_delete(p_list->next); 
+
+    p_del = p_list->next;
+
+    p_del->next->prev = p_del->prev;
+    p_del->prev->next = p_del->next;
+
     return (SUCCESS); 
 }
 
 status_t pop_end(dcll_t* p_list, data_t* p_end_data)
 {
+    node_t* p_del;
+
     if(is_list_empty(p_list))
         return (LIST_EMPTY); 
     *p_end_data = p_list->prev->data; 
-    generic_delete(p_list->prev); 
+    
+    p_del = p_list->prev;
+    
+    p_del->next->prev = p_del->prev;
+    p_del->prev->next = p_del->next;
+    
     return (SUCCESS); 
 }
 
@@ -439,36 +495,7 @@ status_t reverse_list_swp(
     return (SUCCESS); 
 }
 
-
 // HELPER FUNCTIONS 
-/* 
-    PRE-CONDITION: 
-        p_beg->next == p_end 
-        p_end->prev == p_beg 
-        p_mid is a newly allocated node. 
-        p_mid->prev == NULL 
-        p_mid->next == NULL 
-*/
-static void generic_insert(node_t* p_beg, node_t* p_mid, node_t* p_end)
-{
-    p_mid->prev = p_beg; 
-    p_mid->next = p_end; 
-    p_beg->next = p_mid; 
-    p_end->prev = p_mid; 
-}
-
-/* 
-    PRE-CONDITION:  p_delete_node is any NODE in ANY LINKED LIST 
-                    which is not a head node
-*/
-static void generic_delete(node_t* p_delete_node)
-{
-    p_delete_node->prev->next = p_delete_node->next; 
-    p_delete_node->next->prev = p_delete_node->prev; 
-    free(p_delete_node);
-    p_delete_node = NULL; 
-}
-
 static node_t* search_node(dcll_t* p_list, data_t s_data)
 {
     node_t* run = NULL; 
